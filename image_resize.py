@@ -83,7 +83,14 @@ def get_savepath(resized_image, source_image, path_to_save):
 
 
 def save_image(image, savepath):
-        return image.save(savepath)
+    return image.save(savepath)
+
+
+def print_notice(savepath, width, height):
+    if not savepath:
+        print('File will save to source directory')
+    elif (width and height) and width != height:
+        print('You change proportions by width and height')
 
 
 if __name__ == '__main__':
@@ -107,10 +114,7 @@ if __name__ == '__main__':
             savepath = get_savepath(resized_image, source_image, args.savepath)
             path, filename = split(abspath(savepath))
             saved_image = save_image(resized_image, savepath)
-            if not args.savepath:
-                print('File will save to source directory')
-            elif (width and height) and width != height:
-                print('You change proportions by width and height')
+            print_notice(args.savepath, width, height)
             print('Image {} was succesfully resized and save to {}'.format(
                 basename(savepath),
                 path
