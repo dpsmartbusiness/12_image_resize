@@ -86,13 +86,6 @@ def save_image(image, savepath):
     return image.save(savepath)
 
 
-def print_notice(savepath, width, height):
-    if not savepath:
-        print('File will save to source directory')
-    elif (width and height) and width != height:
-        print('You change proportions by width and height')
-
-
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
@@ -102,23 +95,25 @@ if __name__ == '__main__':
     height = args.height
     try:
         if not filepath:
-            print('You forget to specify source image name or filepath to')
-        elif scale == 1 and not (width or height):
-            print('Pls enter arguments for resizing')
-        elif scale != 1 and (width or height):
-            print('Pls enter only scale or image sizes')
-        else:
-            source_image = open_image(filepath)
-            new_size = get_new_size(source_image, width, height, scale)
-            resized_image = resize_image(source_image, (new_size))
-            savepath = get_savepath(resized_image, source_image, args.savepath)
-            path, filename = split(abspath(savepath))
-            saved_image = save_image(resized_image, savepath)
-            print_notice(args.savepath, width, height)
-            print('Image {} was succesfully resized and save to {}'.format(
-                basename(savepath),
-                path
-                ))
+            exit('You forget to specify source image name or filepath')
+        if scale == 1 and not (width or height):
+            exit('Pls enter arguments for resizing')
+        if scale != 1 and (width or height):
+            exit('Pls enter only scale or image sizes')
+        source_image = open_image(filepath)
+        new_size = get_new_size(source_image, width, height, scale)
+        resized_image = resize_image(source_image, (new_size))
+        savepath = get_savepath(resized_image, source_image, args.savepath)
+        path, filename = split(abspath(savepath))
+        saved_image = save_image(resized_image, savepath)
+        if not args.savepath:
+            print('File will save to source directory')
+        if (width and height) and width != height:
+            print('You change proportions by width and height')
+        print('Image {} was succesfully resized and save to {}'.format(
+            basename(savepath),
+            path
+            ))
     except AttributeError:
         print('Filepath not found pls. Try again...')
     except (PermissionError, OSError):
