@@ -1,6 +1,6 @@
 import argparse
 from PIL import Image
-from os.path import splitext, abspath, basename, split
+from os.path import splitext, abspath, basename, split, join
 
 
 def create_parser():
@@ -15,7 +15,7 @@ def create_parser():
     parser.add_argument(
         '-s',
         '--scale',
-        type=int,
+        type=float,
         default=1,
         help='Scale multiplier'
     )
@@ -37,7 +37,7 @@ def create_parser():
         '--savepath',
         '-sp',
         default=None,
-        help='Path to save resized image'
+        help='Directory name to save resized image (for example: c:/devman)'
     )
     return parser
 
@@ -76,7 +76,7 @@ def get_savepath(resized_image, source_image, path_to_save):
         image_ext
     )
     if path_to_save:
-        savepath = path_to_save + '/' + save_template
+        savepath = join(path_to_save, save_template)
     else:
         savepath = save_template
     return savepath
@@ -89,26 +89,35 @@ def save_image(image, savepath):
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
+    filepath = args.filepath
     scale = args.scale
-    if scale != 1 and (args.width or args.height):
-        print('Pls enter only scale or image sizes')
-    else:
-        try:
-            source_image = open_image(args.filepath)
-            new_size = get_new_size(
-                source_image,
-                args.width,
-                args.height,
-                args.scale)
+    width = args.width
+    height = args.height
+    try:
+        if not filepath:
+            print('You forget to specify source image name or filepath to')
+        elif scale == 1 and not (width or height):
+            print('Pls enter arguments for resizing')
+        elif scale != 1 and (width or height):
+            print('Pls enter only scale or image sizes')
+        else:
+            source_image = open_image(filepath)
+            new_size = get_new_size(source_image, width, height, scale)
             resized_image = resize_image(source_image, (new_size))
             savepath = get_savepath(resized_image, source_image, args.savepath)
-            path, file = split(abspath(savepath))
+            path, filename = split(abspath(savepath))
             saved_image = save_image(resized_image, savepath)
+            if not args.savepath:
+                print('File will save to source directory')
+            elif (width and height) and width != height:
+                print('You change proportions by width and height')
             print('Image {} was succesfully resized and save to {}'.format(
                 basename(savepath),
                 path
                 ))
-        except AttributeError:
-            print('Filepath not found pls. Try again...')
-        except (PermissionError, OSError):
-            print('Permission Error. Change savepath and try again')
+    except AttributeError:
+        print('Filepath not found pls. Try again...')
+    except (PermissionError, OSError):
+        print('Permission Error. Change savepath and try again')
+    except ValueError:
+        print('Scale, height and width must be more than 0. Try again...')
