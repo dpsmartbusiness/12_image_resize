@@ -77,14 +77,13 @@ def get_savepath(resized_image, source_image, path_to_save):
     )
     if path_to_save:
         savepath = path_to_save + '/' + save_template
-        print(savepath)
     else:
         savepath = save_template
     return savepath
 
 
 def save_image(image, savepath):
-    return image.save(savepath)
+        return image.save(savepath)
 
 
 if __name__ == '__main__':
@@ -104,13 +103,12 @@ if __name__ == '__main__':
             resized_image = resize_image(source_image, (new_size))
             savepath = get_savepath(resized_image, source_image, args.savepath)
             path, file = split(abspath(savepath))
-            try:
-                saved_image = save_image(resized_image, savepath)
-                print('Image {} was succesfully resized and save to {}'.format(
-                    basename(savepath),
-                    path
+            saved_image = save_image(resized_image, savepath)
+            print('Image {} was succesfully resized and save to {}'.format(
+                basename(savepath),
+                path
                 ))
-            except PermissionError:
-                print('Permission Error. Change savepath and try again')
         except AttributeError:
             print('Filepath not found pls. Try again...')
+        except (PermissionError, OSError):
+            print('Permission Error. Change savepath and try again')
