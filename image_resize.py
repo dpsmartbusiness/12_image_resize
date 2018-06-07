@@ -86,15 +86,6 @@ def save_image(image, savepath):
     return image.save(savepath)
 
 
-def check_args(width, height, scale, filepath):
-    if filepath is None:
-            exit('You forget to specify source image name or filepath')
-    elif scale == 1 and not (args.width or args.height):
-            exit('Pls enter arguments for resizing')
-    elif scale != 1 and (args.width or args.height):
-            exit('Pls enter only scale or image sizes')
-
-
 def get_notice(width, height, savepath):
     if savepath is None:
         print('File save to source directory!')
@@ -106,7 +97,12 @@ if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
     try:
-        check_args(args.width, args.height, args.scale, args.filepath)
+        if args.filepath is None:
+            exit('You forget to specify source image name or filepath')
+        elif args.scale == 1 and not (args.width or args.height):
+            exit('Pls enter arguments for resizing')
+        elif args.scale != 1 and (args.width or args.height):
+            exit('Pls enter only scale or image sizes')
         source_image = open_image(args.filepath)
         new_size = get_new_size(source_image, args.width, args.height, args.scale)
         resized_image = resize_image(source_image, (new_size))
