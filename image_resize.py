@@ -92,9 +92,9 @@ if __name__ == '__main__':
     try:
         if args.filepath is None:
             exit('You forget to specify source image name or filepath')
-        if args.scale == 1 and not (args.width or args.height):
+        elif args.scale == 1 and not (args.width or args.height):
             exit('Pls enter arguments for resizing')
-        if args.scale != 1 and (args.width or args.height):
+        elif args.scale != 1 and (args.width or args.height):
             exit('Pls enter only scale or image sizes')
         source_image = open_image(args.filepath)
         new_size = get_new_size(source_image, args.width, args.height, args.scale)
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             path
             ))
     except AttributeError:
-        print('Filepath not found. Pls Try again...')
+        print('File not found. Pls Try again...')
     except (PermissionError, OSError):
         print('Permission Error. Change savepath and try again')
     except ValueError:
