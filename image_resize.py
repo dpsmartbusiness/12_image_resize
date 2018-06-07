@@ -89,33 +89,25 @@ def save_image(image, savepath):
 if __name__ == '__main__':
     parser = create_parser()
     args = parser.parse_args()
-    filepath = args.filepath
-    scale = args.scale
-    width = args.width
-    height = args.height
     try:
-        if not filepath:
+        if args.filepath is None:
             exit('You forget to specify source image name or filepath')
-        if scale == 1 and not (width or height):
+        if args.scale == 1 and not (args.width or args.height):
             exit('Pls enter arguments for resizing')
-        if scale != 1 and (width or height):
+        if args.scale != 1 and (args.width or args.height):
             exit('Pls enter only scale or image sizes')
-        source_image = open_image(filepath)
-        new_size = get_new_size(source_image, width, height, scale)
+        source_image = open_image(args.filepath)
+        new_size = get_new_size(source_image, args.width, args.height, args.scale)
         resized_image = resize_image(source_image, (new_size))
         savepath = get_savepath(resized_image, source_image, args.savepath)
         path, filename = split(abspath(savepath))
         saved_image = save_image(resized_image, savepath)
-        if not args.savepath:
-            print('File will save to source directory')
-        if (width and height) and width != height:
-            print('You change proportions by width and height')
         print('Image {} was succesfully resized and save to {}'.format(
             basename(savepath),
             path
             ))
     except AttributeError:
-        print('Filepath not found pls. Try again...')
+        print('Filepath not found. Pls Try again...')
     except (PermissionError, OSError):
         print('Permission Error. Change savepath and try again')
     except ValueError:
