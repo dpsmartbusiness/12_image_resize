@@ -98,23 +98,23 @@ def validate_args(args):
         parser.error(
             'You forget to specify source image name or filepath'
             )
-    if not isfile(args.filepath):
+    elif not isfile(args.filepath):
         parser.error(
             'Filepath not found. Pls Try again...'
             )
-    if args.savepath and not isdir(args.savepath):
+    elif args.savepath and not isdir(args.savepath):
         parser.error(
             'Savepath not found. Pls Try again...'
             )
-    if (args.scale or args.width or args.height) <= 0:
+    elif (args.scale or args.width or args.height) <= 0:
         parser.error(
             'Scale, height and width must be more than 0. Try again...'
             )
-    if not (args.width or args.height) and args.scale == 1:
+    elif not (args.width or args.height) and args.scale == 1:
         parser.error(
             'Pls enter arguments for resizing'
             )
-    if (args.width or args.height) and args.scale > 1:
+    elif (args.width or args.height) and args.scale > 1:
         parser.error(
             'Pls enter only scale or image sizes'
             )
